@@ -1,10 +1,9 @@
 require 'card_reuse'
 
-module Spree
-  CheckoutController.class_eval do
-    include CardReuse
+Spree::CheckoutController.class_eval do
+  include CardReuse
 
-    private
+  private
 
     def before_payment
       current_order.payments.destroy_all if request.put?
@@ -31,5 +30,4 @@ module Spree
       params[:order]
     end
 
-  end
 end
