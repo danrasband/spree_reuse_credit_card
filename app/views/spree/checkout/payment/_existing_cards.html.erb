@@ -10,34 +10,32 @@
 
   <h2>Use one of these cards on file?</h2>
 
-  <p class="field">
-
-    <table class="existing-credit-card-list" style="width:545px;">
-      <thead>
-        <tr>
-          <th>Card Number(last four digits)</th>
-          <th>Expiration Month</th>
-          <th>Expiration Year</th>
-          <th>Use?</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @cards.each do |card| %>
-          <tr id="<%= dom_id(card)%>" class="<%= cycle('even', 'odd') %>">
-            <td><%= card.last_digits %></td>
-            <td><%= card.month %></td>
-            <td><%= card.year %></td>
-            <td><%= radio_button_tag "existing_card", card.id %></td>
-            <%# passing in an explicit 'url' here let's us make use of this 'admin' helper and bypass the object_url %>
-            <%# (from resource_controller) that is embedded in the helper %>
-            <td><%# link_to_delete card, {:url => main_app.creditcard_url(card)} %></td>
-            <!-- #{param_prefix} -->
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </p>
+  <% @cards.each do |card| %>
+		<p class="field">    
+			<span id="<%= dom_id(card) %>">
+				<label>
+					<%= radio_button_tag "existing_card", card.id %>
+					<span><%= card %></span>
+				</label>
+			</span>
+		</p>	
+	<% end %>
+	<p class="field" id="new_card_option">
+    <label><%= radio_button_tag "existing_card", 'new' %> <%= t('other_card') %></label>
+	</p>
+	<script type="text/javascript">
+		$(function () {
+			$("#new_card_option ~ p.field").hide();
+			$("input[name='existing_card']:radio").change(function() {
+				if ($("input[name='existing_card']:checked").val() == 'new') {
+					$("#new_card_option ~ p.field").show();
+				}
+				else {
+					$("#new_card_option ~ p.field").hide();
+				}
+			});
+		});
+	</script>
 <% end %>
 
 
