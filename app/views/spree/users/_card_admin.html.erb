@@ -34,3 +34,7 @@
 		 <br/>
   </div>
 <% end %>
+<%# Add Credit Card %>
+<div id="new_creditcard_link">
+  <%= link_to "Add new credit card", :controller => :creditcards, :action => :new, :user_id => current_user.id %>
+</div>
