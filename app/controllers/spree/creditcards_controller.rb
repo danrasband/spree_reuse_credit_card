@@ -1,6 +1,11 @@
 class Spree::CreditcardsController < Spree::BaseController
 
-  respond_to :json
+  respond_to :json, :only => :destroy
+  respond_to :html, :except => [ :destroy ]
+
+  def create
+    @address = Spree::Address.new
+  end
 
   def destroy
     @creditcard = Spree::Creditcard.find(params["id"])
