@@ -1,9 +1,9 @@
 source 'http://rubygems.org'
 
 gem 'pry'
-gem "rspec-rails", :group => [:test, :development]
 
 group :test, :development do
+  gem 'rspec-rails'
   gem 'ffaker'
   gem 'spree_auth', '~> 1.0.0'
   gem 'spree_gateway', :git => 'git://github.com/spree/spree_gateway.git'
