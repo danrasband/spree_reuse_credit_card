@@ -1,8 +1,118 @@
+<% content_for :head do %>
+  <%= javascript_include_tag states_path %>
+<% end %>
 <fieldset id="payment" data-hook>
-  <legend><%= t(:credit_card_information) %></legend>
-  <div data-hook="credit_card_form">
-    <fieldset>
-      <%= image_tag 'creditcards/creditcard.gif', :id => 'creditcard-image' %>
-    </fieldset>
-  </div>
+  <%= form_for :creditcard, :url => creditcards_path, :html => { :id => 'credit-card-billing-address-form' } do |f| %>
+    <div data-hook="credit_card_form">
+      <fieldset id="credit_card">
+        <legend><%= t(:credit_card_information) %></legend>
+        <%= image_tag 'creditcards/creditcard.gif', :id => 'creditcard-image' %>
+        <p class="field" data-hook="card_number">
+          <%= f.label :number, t(:card_number) %><br />
+          <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
+          <%= f.text_field :number, options_hash.merge(:id => 'card_number', :class => 'required', :size => 19, :maxlength => 19) %>
+          <span class="req">*</span>
+          &nbsp;
+          <span id="card_type" style="display:none;">
+            ( <span id="looks_like" ><%= t(:card_type_is) %> <span id="type"></span></span>
+              <span id="unrecognized"><%= t(:unrecognized_card_type) %></span>
+            )
+          </span>
+        </p>
+        <p class="field" data-hook="card_expiration">
+          <%= f.label :expiration %><br />
+          <%= select_month(Date.today, :field_name => 'creditcard[month]', :use_month_numbers => true, :class => 'required') %>
+          <%= select_year(Date.today, :field_name => 'creditcard[year]', :start_year => Date.today.year, :end_year => Date.today.year + 15, :class => 'required') %>
+          <span class="req">*</span>
+        </p>
+        <p class="field" data-hook="cart_code">
+          <%= label_tag :verification_value, t(:card_code) %><br />
+          <%= f.text_field :verification_value, options_hash.merge(:id => 'card_code', :class => 'required', :size => 5) %>
+          <span class="req">*</span>
+          <%= link_to "(#{t(:whats_this)})", spree.content_path('cvv'), :target => '_blank', :onclick => "window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false", "data-hook" => "cvv_link" %>
+        </p>
+      </fieldset>
+    </div>
+    <div data-hook="billing_fieldset_wrapper">
+      <fieldset id="billing" data-hook>
+        <%= f.fields_for @address do |bill_form| %>
+          <legend><%= t(:billing_address) %></legend>
+          <div class="inner" data-hook="billing_inner">
+            <p class="field" id="bfirstname">
+              <%= bill_form.label :firstname, t(:first_name) %><span class="req">*</span><br />
+              <%= bill_form.text_field :firstname, :class => 'required' %>
+            </p>
+            <p class="field" id="blastname">
+              <%= bill_form.label :lastname, t(:last_name) %><span class="req">*</span><br />
+              <%= bill_form.text_field :lastname, :class => 'required' %>
+            </p>
+            <% if Spree::Config[:company] %>
+              <p class="field" id="bcompany">
+                <%= bill_form.label :company, t(:company) %><br />
+                <%= bill_form.text_field :company %>
+              </p>
+            <% end %>
+            <p class="field" id="baddress1">
+              <%= bill_form.label :address1, t(:street_address) %><span class="req">*</span><br />
+              <%= bill_form.text_field :address1, :class => 'required' %>
+            </p>
+            <p class="field" id="baddress2">
+              <%= bill_form.label :address2, t(:street_address_2) %><br />
+              <%= bill_form.text_field :address2 %>
+            </p>
+
+            <p class="field" id="bcity">
+              <%= bill_form.label :city, t(:city) %><span class="req">*</span><br />
+              <%= bill_form.text_field :city, :class => 'required' %>
+            </p>
+
+            <p class="field" id="bcountry">
+              <%= bill_form.label :country_id, t(:country) %><span class="req">*</span><br />
+              <span id="bcountry">
+                <%= bill_form.collection_select :country_id, available_countries, :id, :name, {}, {:class => 'required'} %>
+              </span>
+            </p>
+
+            <% if Spree::Config[:address_requires_state] %>
+              <p class="field" id="bstate">
+                <% have_states = !@address.country.states.empty? %>
+                <%= bill_form.label :state, t(:state) %><span class="req">*</span><br />
+                <%= bill_form.text_field :state_name, :class => 'required' %>
+                <% state_elements = [
+                   bill_form.collection_select(:state_id, @address.country.states,
+                                      :id, :name,
+                                      {:include_blank => true},
+                                      {:class => have_states ? 'required' : 'hidden',
+                                      :disabled => !have_states}) +
+                   bill_form.text_field(:state_name,
+                                      :class => !have_states ? 'required' : 'hidden',
+                                      :disabled => have_states)
+                   ].join.gsub('"', "'").gsub("\n", "")
+                %>
+                <%= javascript_tag do -%>
+                  document.write("<%== state_elements %>");
+                <% end -%>
+              </p>
+            <% end %>
+
+            <p class="field" id="bzipcode">
+              <%= bill_form.label :zipcode, t(:zip) %><span class="req">*</span><br />
+              <%= bill_form.text_field :zipcode, :class => 'required' %>
+            </p>
+            <p class="field" id="bphone">
+              <%= bill_form.label :phone, t(:phone) %><span class="req">*</span><br />
+              <%= bill_form.text_field :phone, :class => 'required' %>
+            </p>
+            <% if Spree::Config[:alternative_billing_phone] %>
+              <p class="field" id="baltphone">
+                <%= bill_form.label :alternative_phone, t(:alternative_phone) %><br />
+                <%= bill_form.text_field :alternative_phone %>
+              </p>
+            <% end %>
+          </div>
+        <% end %>
+      </fieldset>
+    </div>
+    <%= f.submit t(:save) %>
+  <% end %>
 </fieldset>
