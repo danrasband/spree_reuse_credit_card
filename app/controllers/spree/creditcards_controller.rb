@@ -1,4 +1,5 @@
 class Spree::CreditcardsController < Spree::BaseController
+  load_and_authorize_resource
 
   respond_to :json, :only => :destroy
   respond_to :html, :except => [ :destroy ]
