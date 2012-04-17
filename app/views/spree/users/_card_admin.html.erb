@@ -4,37 +4,42 @@
   <% end -%>
 <% end %>
 
-<% if @cards.present? %>
+<div id='card_notice'></div>
 
-  <div id='card_notice'></div>
+<h2>Credit Cards on File</h2>
 
-  <h2>Credit Cards on File</h2>
-
-  <div class="field">
-    <table class="existing-credit-card-list" style="width:545px;">
-      <thead>
-        <tr>
-          <th>Card Number(last four digits)</th>
-          <th>Expiration Month</th>
-          <th>Expiration Year</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
+<div class="field">
+  <table class="existing-credit-card-list" style="width:545px;">
+    <thead>
+      <tr>
+        <th>Card Number(last four digits)</th>
+        <th>Expiration Month</th>
+        <th>Expiration Year</th>
+        <th>Billing Address</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @cards.present? %>
         <% @cards.each do |card| %>
           <tr id="<%= dom_id(card)%>" class="<%= cycle('even', 'odd') %>">
             <td><%= card.last_digits %></td>
             <td><%= card.month %></td>
             <td><%= card.year %></td>
+            <td><%= card.address.to_s rescue '' %></td>
             <td><%= link_to_delete_credit_card(card) %></td>
           </tr>
         <% end %>
-      </tbody>
-     </table>
-		 <br/>
-  </div>
-<% end %>
-<%# Add Credit Card %>
+      <% else %>
+        <tr id="no-credit-cards-row">
+          <td colspan="4"><%= t(:no_credit_cards_on_file) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+   </table>
+	 <br/>
+</div>
+
 <div id="new_creditcard_link">
-  <%= link_to "Add new credit card", :controller => :creditcards, :action => :new %>
+  <%= link_to t(:add_new_payment_profile), :controller => :creditcards, :action => :new %>
 </div>

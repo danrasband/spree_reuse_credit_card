@@ -7,6 +7,9 @@ Spree::Creditcard.class_eval do
   end
 
 	def to_s
-    "************#{last_digits} #{month}/#{year}"
+    string = "************#{last_digits} #{month}/#{year}"
+    if address.present?
+      string += " - #{address.to_plaintext}"
+    end
   end
 end

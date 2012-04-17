@@ -15,7 +15,7 @@ Spree::CheckoutController.class_eval do
       # For payment step, filter order parameters to produce the expected nested attributes for a single payment and its source, discarding attributes for payment methods other than the one selected
       if @order.payment?
         if params[:payment_source].present? && source_params = params.delete(:payment_source)[params[:order][:payments_attributes].first[:payment_method_id].underscore]
-          if params[:existing_card]
+          if params[:existing_card] && params[:existing_card] != 'new'
             creditcard = Spree::Creditcard.find(params[:existing_card])
             authorize! :manage, creditcard
             params[:order][:payments_attributes].first[:source] = creditcard

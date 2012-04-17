@@ -1,0 +1,106 @@
+<%= image_tag 'creditcards/creditcard.gif', :id => 'creditcard-image' %>
+<% param_prefix = "payment_profile_source[#{payment_method.id}]" %>
+
+<p class="field" data-hook="card_number">
+  <%= label_tag nil, t(:card_number) %><br />
+  <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
+  <%= text_field_tag "#{param_prefix}[number]", '', options_hash.merge(:id => 'card_number', :class => 'required', :size => 19, :maxlength => 19) %>
+  <span class="req">*</span>
+  &nbsp;
+  <span id="card_type" style="display:none;">
+    ( <span id="looks_like" ><%= t(:card_type_is) %> <span id="type"></span></span>
+      <span id="unrecognized"><%= t(:unrecognized_card_type) %></span>
+    )
+  </span>
+</p>
+<p class="field" data-hook="card_expiration">
+  <%= label_tag nil, t(:expiration) %><br />
+  <%= select_month(Date.today, :prefix => param_prefix, :field_name => 'month', :use_month_numbers => true, :class => 'required') %>
+  <%= select_year(Date.today, :prefix => param_prefix, :field_name => 'year', :start_year => Date.today.year, :end_year => Date.today.year + 15, :class => 'required') %>
+  <span class="req">*</span>
+</p>
+<p class="field" data-hook="cart_code">
+  <%= label_tag nil, t(:card_code) %><br />
+  <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'card_code', :class => 'required', :size => 5) %>
+  <span class="req">*</span>
+  <%= link_to "(#{t(:whats_this)})", spree.content_path('cvv'), :target => '_blank', :onclick => "window.open(this.href,'cvv_info','left=20,top=20,width=500,height=500,toolbar=0,resizable=0,scrollbars=1');return false", "data-hook" => "cvv_link" %>
+</p>
+<fieldset id="<%= "#{payment_method.name}_billing_address" %>">
+  <legend><%= t(:billing_address) %></legend>
+  <% bill_param_prefix = param_prefix + '[billing_address]' %>
+  <div class="inner" data-hook="billing_inner">
+    <p class="field" id="bfirstname">
+      <%= label_tag "#{bill_param_prefix}[firstname]", t(:first_name) %><span class="req">*</span><br />
+      <%= text_field_tag "#{bill_param_prefix}[firstname]", nil, :class => 'required' %>
+    </p>
+    <p class="field" id="blastname">
+      <%= label_tag "#{bill_param_prefix}[lastname]", t(:last_name) %><span class="req">*</span><br />
+      <%= text_field_tag "#{bill_param_prefix}[lastname]", nil, :class => 'required' %>
+    </p>
+    <% if Spree::Config[:company] %>
+      <p class="field" id="bcompany">
+        <%= label_tag "#{bill_param_prefix}[company]", t(:company) %><br />
+        <%= text_field_tag "#{bill_param_prefix}[company]" %>
+      </p>
+    <% end %>
+    <p class="field" id="baddress1">
+      <%= label_tag "#{bill_param_prefix}[address1]", t(:street_address) %><span class="req">*</span><br />
+      <%= text_field_tag "#{bill_param_prefix}[address1]", nil, :class => 'required' %>
+    </p>
+    <p class="field" id="baddress2">
+      <%= label_tag "#{bill_param_prefix}[address2]", t(:street_address_2) %><br />
+      <%= text_field_tag "#{bill_param_prefix}[address2]" %>
+    </p>
+
+    <p class="field" id="bcity">
+      <%= label_tag "#{bill_param_prefix}[city]", t(:city) %><span class="req">*</span><br />
+      <%= text_field_tag "#{bill_param_prefix}[city]", nil, :class => 'required' %>
+    </p>
+
+    <p class="field" id="bcountry">
+      <%= label_tag "#{bill_param_prefix}[country_id]", t(:country) %><span class="req">*</span><br />
+      <span id="bcountry">
+        <%= collection_select :address, :country_id, available_countries, :id, :name, {}, {:class => 'required',
+                              :name => "#{bill_param_prefix}[country_id]"} %>
+      </span>
+    </p>
+
+    <% if Spree::Config[:address_requires_state] %>
+      <p class="field" id="bstate">
+        <% have_states = !@address.country.states.empty? %>
+        <%= label_tag "#{bill_param_prefix}[state]", t(:state) %><span class="req">*</span><br />
+        <%= text_field_tag "#{bill_param_prefix}[state_name]", nil, :class => 'required' %>
+        <% state_elements = [
+           collection_select(:address, :state_id, @address.country.states,
+                              :id, :name,
+                              {:include_blank => true},
+                              {:class => have_states ? 'required' : 'hidden',
+                              :disabled => !have_states,
+                              :name => "#{bill_param_prefix}[state_id]"}) +
+           text_field_tag("#{bill_param_prefix}[state_name]", nil,
+                              :class => !have_states ? 'required' : 'hidden',
+                              :disabled => have_states)
+           ].join.gsub('"', "'").gsub("\n", "")
+        %>
+        <%= javascript_tag do -%>
+          document.write("<%== state_elements %>");
+        <% end -%>
+      </p>
+    <% end %>
+
+    <p class="field" id="bzipcode">
+      <%= label_tag "#{bill_param_prefix}[zipcode]", t(:zip) %><span class="req">*</span><br />
+      <%= text_field_tag "#{bill_param_prefix}[zipcode]", nil, :class => 'required' %>
+    </p>
+    <p class="field" id="bphone">
+      <%= label_tag "#{bill_param_prefix}[phone]", t(:phone) %><span class="req">*</span><br />
+      <%= text_field_tag "#{bill_param_prefix}[phone]", nil, :class => 'required' %>
+    </p>
+    <% if Spree::Config[:alternative_billing_phone] %>
+      <p class="field" id="baltphone">
+        <%= label_tag "#{bill_param_prefix}[alternative_phone]", t(:alternative_phone) %><br />
+        <%= text_field_tag "#{bill_param_prefix}[alternative_phone]" %>
+      </p>
+    <% end %>
+  </div>
+</fieldset>
