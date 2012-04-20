@@ -59,7 +59,7 @@ class Spree::CreditcardsController < Spree::BaseController
       end
     else
       respond_with(@creditcard) do |format|
-        format.json { render :status => 500 }
+        format.json { render :nothing => true, :status => 500 }
       end
     end
   end
