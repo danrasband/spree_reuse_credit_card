@@ -77,6 +77,8 @@ class Spree::CreditcardsController < Spree::BaseController
 
     def address_attributes
       @address_attributes ||= params[:payment_profile_source][payment_method.id.to_s.to_sym].delete(:billing_address)
+      @address_attributes[:user_id] = current_user.id
+      @address_attributes
     end
 
     def creditcard_attributes
