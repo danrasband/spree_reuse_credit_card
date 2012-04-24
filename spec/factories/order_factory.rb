@@ -2,7 +2,7 @@ FactoryGirl.define do
 
   factory :order_in_address_state, :parent => :order do
     after_build { |order|
-      order.line_items << Factory(:line_item, :order => order)
+      order.line_items << FactoryGirl.create(:line_item, :order => order)
     }
 
     after_create { |order|
@@ -15,8 +15,8 @@ FactoryGirl.define do
   end
 
   factory :order_in_payment_state, :parent => :order_in_delivery_state do
-    after_create { |order| 
-      order.next! 
+    after_create { |order|
+      order.next!
     }
   end
 
@@ -34,7 +34,7 @@ FactoryGirl.define do
 
 #  factory :order_in_payment_state, :parent => :order do
 #    after_create { |order|
-#      # order.line_items << Factory(:line_item, :order => order)
+#      # order.line_items << FactoryGirl.create(:line_item, :order => order)
 #
 #      order.next!
 #      order.next!

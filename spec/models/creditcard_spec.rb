@@ -6,7 +6,7 @@ require 'spec_helper'
 #
 #  before(:each) do
 #
-#    @order = Factory(:order)
+#    @order = FactoryGirl.create(:order)
 #    @creditcard = Spree::Creditcard.new
 #    @payment = Spree::Payment.create(:amount => 100, :order => @order)
 #
