@@ -1,11 +1,19 @@
 class Spree::CreditcardsController < Spree::BaseController
-  #load_and_authorize_resource
+  load_and_authorize_resource
 
   before_filter :load_address, :only => [:new, :create]
   before_filter :load_payment_methods, :only => :new
 
   respond_to :json, :only => :destroy
   respond_to :html, :except => [ :destroy ]
+
+  def new
+    super.new if defined?(super)
+    if @payment_methods.blank?
+      flash[:error] = t(:no_payment_methods_enabled)
+      redirect_back_or_default(spree.account_path)
+    end
+  end
 
   def create
 

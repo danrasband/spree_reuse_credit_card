@@ -10,3 +10,4 @@ en:
   unable_to_save_credit_card: "Unable to save credit card."
   unable_to_save_address: "Unable to save address."
   payment_profile_saved_successfully: "Payment profile saved successfully."
+  no_payment_methods_enabled: "No payment methods are enabled. Please contact the website administrator."
