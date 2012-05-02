@@ -16,11 +16,11 @@ function displayCreditCardDeleteStatus(notice) {
 
 (function($){
   $(document).ready(function(){
-    if($('[data-hook="billing_fieldset_wrapper"]').is('*')) {
+    if($('#payment_profile').is('*')) {
 
-      $('#creditcard_billing_address_state_name:first').remove();
+      $('#bstate input:first').remove();
 
-      $('#credit-card-billing-address-form').validate();
+      $('form[action="/creditcards"]').validate();
 
       var get_states = function(region){
         country = $('p#' + region + 'country' + ' span#' + region + 'country :only-child').val();
