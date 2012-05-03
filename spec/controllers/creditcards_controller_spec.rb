@@ -51,7 +51,7 @@ describe Spree::CreditcardsController do
         it 'should show error when gateway returns error'
 
         it 'should allow user to create new credit card profile' do
-          # @todo Should I make this more of an integration test???
+          # TODO Should I make this more of an integration test???
           spree_get :new
           response.should render_template(:new)
           fake_response = stub(true)

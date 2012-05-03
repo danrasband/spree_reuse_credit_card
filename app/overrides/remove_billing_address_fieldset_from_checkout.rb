@@ -1,5 +1,5 @@
 # Billing address should be tied to the credit card.
-# @todo Add billing address form to the "Other card" section of the payment
+# TODO Add billing address form to the "Other card" section of the payment
 #   form.
 Deface::Override.new(
   :name => 'remove_billing_address_fieldset_from_checkout',
