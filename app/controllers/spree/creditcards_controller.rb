@@ -62,13 +62,11 @@ class Spree::CreditcardsController < Spree::BaseController
     # I'm thinking we want to always leave them alone
 
     if @creditcard.update_attribute(:deleted_at, Time.now)
-      respond_with(@creditcard) do |format|
-        format.json { render :status => 200 }
-      end
+      flash[:notice] = t(:credit_card_deleted_successfully)
+      redirect_back_or_default(account_path)
     else
-      respond_with(@creditcard) do |format|
-        format.json { render :nothing => true, :status => 500 }
-      end
+      flash[:error] = t(:credit_card_could_not_be_deleted)
+      redirect_back_or_default(account_path)
     end
   end
 

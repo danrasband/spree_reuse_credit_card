@@ -5,6 +5,7 @@ module Spree::CreditcardsHelper
 
     s = link_to_delete card, {
               :url => spree.creditcard_url(card),
+              :method => :delete,
               :dataType => 'json',
               :success => "function(r){ console.log('here'); jQuery('##{dom_id card}').fadeOut('hide'); displayCreditCardDeleteStatus('#{t(:creditcard_successfully_removed)}'); }",
               :error => "function(r){ displayCreditCardDeleteStatus('#{t(:creditcard_not_removed)}'); }"}
