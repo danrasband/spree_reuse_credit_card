@@ -4,8 +4,7 @@ class Spree::CreditcardsController < Spree::BaseController
   before_filter :load_address, :only => [:new, :create]
   before_filter :load_payment_methods, :only => :new
 
-  respond_to :json, :only => :destroy
-  respond_to :html, :except => [ :destroy ]
+  respond_to :html
 
   def new
     super.new if defined?(super)

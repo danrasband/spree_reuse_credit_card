@@ -27,7 +27,7 @@
             <td><%= card.month %></td>
             <td><%= card.year %></td>
             <td><%= card.address.to_s rescue '' %></td>
-            <td><%= link_to_delete_credit_card(card) %></td>
+            <td><%= link_to image_tag('admin/icons/delete.png')+' '+t(:delete), card, :method => :delete %></td>
           </tr>
         <% end %>
       <% else %>

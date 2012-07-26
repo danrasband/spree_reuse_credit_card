@@ -11,3 +11,5 @@ en:
   unable_to_save_address: "Unable to save address."
   payment_profile_saved_successfully: "Payment profile saved successfully."
   no_payment_methods_enabled: "No payment methods are enabled. Please contact the website administrator."
+  credit_card_deleted_successfully: "Your Credit Card was deleted successfully"
+  credit_card_could_not_be_deleted: "Your Credit Card could not be deleted"
